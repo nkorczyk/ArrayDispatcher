@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:comps="comps.*"
+	width="100%" height="100%" 
+	creationComplete="application1_creationCompleteHandler(event)">
+	<s:layout>
+		<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	<s:VGroup>
+		<comps:VComp id="myComp" dataLoaded="myComp_someEventHandler(event)"/>
+		<s:TextArea id="ti"/>
+		<mx:DataGrid id="dg">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Lp" dataField="index"/>
+				<mx:DataGridColumn headerText="Data" dataField="value"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:Label id="indexL"/>
+		<s:Label id="itemL"/>
+		<s:BorderContainer width="60" height="30">
+			<s:Label id="myL" text="Label" creationComplete="myL_creationCompleteHandler(event)"/>
+		</s:BorderContainer>
+	</s:VGroup>
+	<s:VGroup>
+		<s:List id="myList" labelField="value"
+			change="myList_changeHandler(event)">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="6" requestedRowCount="6"/>
+			</s:layout>
+		</s:List>
+	</s:VGroup>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.utils.NameUtil;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import comps.CustomEvent;
+			
+			protected function myComp_someEventHandler(event:CustomEvent):void
+			{
+				var temp:int;
+				for (var index:String in event.data)
+				{
+					ti.text += index + ": " + event.data[index].value + "\n";
+					if (event.data[index].value == 19)
+					{
+						temp += event.data[index].value;
+					}
+				}
+				trace("Found: " + temp);
+				dg.dataProvider = event.data;
+				myList.dataProvider = event.data;
+			}	
+			
+			protected function myList_changeHandler(event:IndexChangeEvent):void
+			{
+				var currentIndx:int = event.currentTarget.selectedIndex;
+				var currentDataItem:Object = event.currentTarget.selectedItem;
+				indexL.text = "Index: " + String(currentIndx);
+				itemL.text = "Item: " + String(currentDataItem.value);
+			}
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var myObject:Object = new Object();
+				var tempString:String;
+				
+				tempString = NameUtil.createUniqueName(myObject);
+				trace("Unique Name: " + tempString);
+				tempString = NameUtil.displayObjectToString(myComp);
+				trace("MyComp: " + tempString);
+				tempString = NameUtil.getUnqualifiedClassName(myComp);
+				trace("MyComp ClassName: " + tempString);
+				tempString = NameUtil.getUnqualifiedClassName(dg);
+				trace("dg ClassName: " + tempString);
+				tempString = NameUtil.getUnqualifiedClassName(myObject);
+				trace("myObject ClassName: " + tempString);
+			}
+			
+			protected function myL_creationCompleteHandler(event:FlexEvent):void
+			{
+				var autoWidth:Number = Math.max(100, myL.width + 10);
+				myL.width = autoWidth;
+			}
+		]]>
+	</fx:Script>
+</s:Application>

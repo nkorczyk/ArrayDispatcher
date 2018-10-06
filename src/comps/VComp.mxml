@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="100%">
+	<fx:Metadata>
+		[Event(name="dataLoaded", type="comps.CustomEvent")]
+	</fx:Metadata>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	<s:Button label="Click me" click="button1_clickHandler(event)"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			private var _arrayD:ArrayDispatcher = new ArrayDispatcher("one", "two", "three", "four", "five");
+			private var _array:ArrayCollection = new ArrayCollection(_arrayD);
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var data:ArrayCollection = getData();
+				dispatchEvent(new CustomEvent(CustomEvent.DATA_LOADED, false, false, data));
+			}
+			
+			private function getData():ArrayCollection
+			{
+				var dObj:DisplayObject;
+				var obj:Object;
+				var dataCollection:ArrayCollection = new ArrayCollection();
+				for (var i:int = 0; i < 1000; i++)
+				{
+					obj = new Object();
+					obj.index = i;
+					obj.value = Math.round(Math.random() * 100);
+					dataCollection.addItem(obj);
+				}
+				return dataCollection;
+			}
+		]]>
+	</fx:Script>
+</s:Group>
